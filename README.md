@@ -109,9 +109,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 📧 Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_twitter) - your.email@example.com
+Your Name - jkliwinjose@gmail.com
 
-Project Link: [https://github.com/yourusername/image-change-detector](https://github.com/yourusername/image-change-detector)
+Project Link: (https://huggingface.co/spaces/LIWIN-12/image-change-detector)
 
 ## 🙏 Acknowledgments
 

@@ -24,7 +24,7 @@ An advanced image comparison tool that detects and highlights differences betwee
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/image-change-detector.git
+   git clone https://github.com/LIWIN-12/image-change-detector.git
    cd image-change-detector
    ```
 

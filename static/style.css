@@ -239,7 +239,7 @@ main {
 .page { display: none; }
 .page.active { display: flex; flex-direction: column; flex: 1; min-height: 0; }
 .page-head, .controls, .status, .result { flex: none; }
-#compare .uploads { flex: 1; min-height: 220px; }
+.uploads { flex: 1; min-height: 220px; }
 
 /* page header */
 .page-head {
@@ -393,29 +393,6 @@ main {
   border: 1px solid var(--ink);
   background: var(--paper);
 }
-.upload-card input[type="file"]:not(.native-file) {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  border: 1px solid var(--ink);
-  background: var(--surface);
-  font: 11px var(--mono);
-  cursor: pointer;
-}
-.drop {
-  margin-top: 12px;
-  min-height: 132px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--rule);
-  background-color: var(--matrix);
-  background-image: radial-gradient(var(--rule) 1px, transparent 1px);
-  background-size: 8px 8px;
-}
-.drop img { display: none; max-width: 100%; max-height: 260px; background: var(--paper); }
-.drop img.loaded { display: block; }
-
 .controls {
   display: flex;
   align-items: flex-end;

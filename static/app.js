@@ -8,26 +8,6 @@ function status(id, text, isError = false) {
   el.classList.toggle("error", isError);
 }
 
-function bindPreview(inputId, imgId) {
-  const input = $(inputId);
-  const img = $(imgId);
-  input.addEventListener("change", () => {
-    const file = input.files[0];
-    if (img.dataset.url) URL.revokeObjectURL(img.dataset.url);
-    img.classList.remove("loaded");
-    img.removeAttribute("src");
-    if (!file) return;
-    img.dataset.url = URL.createObjectURL(file);
-    img.src = img.dataset.url;
-    img.classList.add("loaded");
-  });
-}
-
-["tamper-input:tamper-preview", "ai-input:ai-preview"].forEach((pair) => {
-  const [input, img] = pair.split(":");
-  bindPreview(input, img);
-});
-
 function slotParts(slot) {
   return {
     input: $(slot + "-input"),
@@ -78,7 +58,7 @@ function loadSlot(slot, file) {
   part.image.src = url;
 }
 
-["before", "after"].forEach((slot) => {
+["before", "after", "tamper", "ai"].forEach((slot) => {
   const part = slotParts(slot);
   part.input.addEventListener("change", () => loadSlot(slot, part.input.files[0]));
 

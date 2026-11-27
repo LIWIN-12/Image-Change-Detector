@@ -146,10 +146,17 @@
               <p>Compression, noise and duplicated-patch clues. A clean image can look suspect after re-saving.</p>
             </div>
           </div>
-          <div class="card upload-card wide">
-            <label for="tamper-input">IMAGE TO INSPECT <span>:</span></label>
-            <input id="tamper-input" type="file" accept="image/png,image/jpeg">
-            <div class="drop"><img id="tamper-preview" alt="Tamper preview"></div>
+          <div class="card upload-card wide uploads">
+            <div class="upload-head">
+              <label for="tamper-input">IMAGE TO INSPECT <span>:</span></label>
+              <span class="file-meta" id="tamper-meta">EMPTY SLOT :</span>
+              <button type="button" class="clear-slot" id="tamper-clear" hidden>[ × CLEAR ]</button>
+            </div>
+            <input id="tamper-input" class="native-file" type="file" accept="image/png,image/jpeg">
+            <label class="dropzone" for="tamper-input" data-slot="tamper">
+              <span class="drop-prompt">[ + DROP IMAGE OR CLICK TO BROWSE ]</span>
+              <img id="tamper-preview" alt="Tamper preview" hidden>
+            </label>
           </div>
           <div class="card controls"><button class="primary" id="tamper-run">RUN CHECKS »</button></div>
           <div class="status" id="tamper-status" aria-live="polite"></div>
@@ -177,10 +184,17 @@
               <p>File tags, a local detector and visual clues, combined into a confidence band.</p>
             </div>
           </div>
-          <div class="card upload-card wide">
-            <label for="ai-input">IMAGE TO ASSESS <span>:</span></label>
-            <input id="ai-input" type="file" accept="image/png,image/jpeg">
-            <div class="drop"><img id="ai-preview" alt="AI preview"></div>
+          <div class="card upload-card wide uploads">
+            <div class="upload-head">
+              <label for="ai-input">IMAGE TO ASSESS <span>:</span></label>
+              <span class="file-meta" id="ai-meta">EMPTY SLOT :</span>
+              <button type="button" class="clear-slot" id="ai-clear" hidden>[ × CLEAR ]</button>
+            </div>
+            <input id="ai-input" class="native-file" type="file" accept="image/png,image/jpeg">
+            <label class="dropzone" for="ai-input" data-slot="ai">
+              <span class="drop-prompt">[ + DROP IMAGE OR CLICK TO BROWSE ]</span>
+              <img id="ai-preview" alt="AI preview" hidden>
+            </label>
           </div>
           <div class="card controls"><button class="primary" id="ai-run">ASSESS IMAGE »</button></div>
           <div class="status" id="ai-status" aria-live="polite"></div>

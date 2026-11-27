@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Image Forensics</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Image Forensics <span>local analysis</span></div>
+    <div class="topnote">Three checks, one workspace</div>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <nav>
+        <button class="nav-item active" data-tab="compare"><span>01</span>Compare</button>
+        <button class="nav-item" data-tab="tamper"><span>02</span>Tamper check</button>
+        <button class="nav-item" data-tab="ai"><span>03</span>AI origin</button>
+      </nav>
+      <div class="sidebar-note">
+        <strong>Read this first</strong>
+        <p>Results are evidence, not proof. Detectors miss new generators and fail on compressed images. No metadata tag means unknown, not human-made.</p>
+      </div>
+    </aside>
+
+    <main>
+      <!-- COMPARE -->
+      <section class="page active" id="compare">
+        <div class="page-head">
+          <div class="eyebrow">01 / comparison</div>
+          <h1>Compare two images</h1>
+          <p>Upload a before and after image. The pair is aligned, then changed regions are boxed and counted.</p>
+        </div>
+
+        <div class="grid two">
+          <div class="card upload-card">
+            <label for="before-input">Before image</label>
+            <input id="before-input" type="file" accept="image/png,image/jpeg">
+            <div class="drop"><img id="before-preview" alt="Before preview"></div>
+          </div>
+          <div class="card upload-card">
+            <label for="after-input">After image</label>
+            <input id="after-input" type="file" accept="image/png,image/jpeg">
+            <div class="drop"><img id="after-preview" alt="After preview"></div>
+          </div>
+        </div>
+
+        <div class="card controls">
+          <div class="field">
+            <label for="threshold">Difference threshold <output id="threshold-value">30</output></label>
+            <input id="threshold" type="range" min="1" max="100" value="30">
+          </div>
+          <div class="field">
+            <label for="min-area">Minimum region area <output id="min-area-value">100</output></label>
+            <input id="min-area" type="range" min="20" max="2000" step="20" value="100">
+          </div>
+          <label class="check"><input id="align" type="checkbox" checked> Align images first</label>
+          <button class="primary" id="compare-run">Run comparison</button>
+        </div>
+
+        <div class="status" id="compare-status" aria-live="polite"></div>
+
+        <div class="result" id="compare-result" hidden>
+          <div class="stats">
+            <div class="stat"><span>Changed regions</span><strong id="stat-regions">0</strong></div>
+            <div class="stat"><span>Largest region</span><strong id="stat-area">0</strong></div>
+            <div class="stat"><span>Mean difference</span><strong id="stat-diff">0</strong></div>
+            <div class="stat"><span>Alignment</span><strong id="stat-aligned">—</strong></div>
+          </div>
+          <div class="grid three results-images">
+            <figure class="card"><figcaption>Marked changes</figcaption><img id="out-marked" alt="Marked changes"></figure>
+            <figure class="card"><figcaption>Change mask</figcaption><img id="out-mask" alt="Change mask"></figure>
+            <figure class="card"><figcaption>Aligned after image</figcaption><img id="out-after" alt="Aligned after image"></figure>
+          </div>
+          <details class="card">
+            <summary>Region details</summary>
+            <table id="region-table"><thead><tr><th>X</th><th>Y</th><th>W</th><th>H</th><th>Area</th><th>Mean diff</th></tr></thead><tbody></tbody></table>
+          </details>
+          <details class="card">
+            <summary>Raw difference</summary>
+            <img id="out-diff" alt="Raw difference">
+          </details>
+          <a class="download" id="marked-download" download="marked.png">Download marked image</a>
+        </div>
+      </section>
+
+      <!-- TAMPER -->
+      <section class="page" id="tamper">
+        <div class="page-head">
+          <div class="eyebrow">02 / single image</div>
+          <h1>Tamper check</h1>
+          <p>Compression, noise and duplicated-patch clues. A clean image can look suspicious after re-saving.</p>
+        </div>
+        <div class="card upload-card wide">
+          <label for="tamper-input">Image to inspect</label>
+          <input id="tamper-input" type="file" accept="image/png,image/jpeg">
+          <div class="drop"><img id="tamper-preview" alt="Tamper preview"></div>
+        </div>
+        <div class="card controls">
+          <button class="primary" id="tamper-run">Run checks</button>
+        </div>
+        <div class="status" id="tamper-status" aria-live="polite"></div>
+        <div class="result" id="tamper-result" hidden>
+          <div class="stats">
+            <div class="stat"><span>ELA mean diff</span><strong id="stat-ela">0</strong><small>not a tamper score</small></div>
+            <div class="stat"><span>Copy-move pairs</span><strong id="stat-pairs">0</strong><small>matching patches</small></div>
+            <div class="stat"><span>Noise ratio</span><strong id="stat-ratio">0</strong><small>max ÷ median</small></div>
+          </div>
+          <div class="grid three results-images">
+            <figure class="card"><figcaption>ELA heatmap</figcaption><img id="tamper-heat" alt="ELA heatmap"></figure>
+            <figure class="card"><figcaption>Noise map</figcaption><img id="tamper-noise" alt="Noise map"></figure>
+            <figure class="card"><figcaption>Copy-move matches</figcaption><img id="tamper-marked" alt="Copy-move matches"></figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI -->
+      <section class="page" id="ai">
+        <div class="page-head">
+          <div class="eyebrow">03 / provenance</div>
+          <h1>AI origin</h1>
+          <p>File tags, a local ONNX detector and weak visual clues, combined into a confidence band.</p>
+        </div>
+        <div class="card upload-card wide">
+          <label for="ai-input">Image to assess</label>
+          <input id="ai-input" type="file" accept="image/png,image/jpeg">
+          <div class="drop"><img id="ai-preview" alt="AI preview"></div>
+        </div>
+        <div class="card controls">
+          <button class="primary" id="ai-run">Assess image</button>
+        </div>
+        <div class="status" id="ai-status" aria-live="polite"></div>
+        <div class="result" id="ai-result" hidden>
+          <div class="grid two">
+            <figure class="card"><figcaption>Uploaded image</figcaption><img id="ai-image" alt="Uploaded image"></figure>
+            <div class="verdict" id="ai-verdict">
+              <span class="verdict-label">Assessment</span>
+              <strong class="verdict-value" id="ai-band">—</strong>
+              <p id="ai-reason"></p>
+            </div>
+          </div>
+          <div class="grid three">
+            <div class="card"><h3>File tags</h3><div id="ai-hits" class="tag-list"></div></div>
+            <div class="card"><h3>AI detector</h3><div class="probability" id="ai-probability">—</div><div class="meter"><div id="ai-meter"></div></div></div>
+            <div class="card"><h3>Visual clues</h3><div id="ai-flags" class="tag-list"></div></div>
+          </div>
+          <details class="card">
+            <summary>Raw numbers</summary>
+            <p>Texture smoothness (Laplacian variance): <span id="ai-smoothness">—</span></p>
+            <p>Clipped-saturation fraction: <span id="ai-clipped">—</span></p>
+          </details>
+          <p class="footnote">Detectors miss new AI generators and fail on compressed images. Treat every result as evidence, never proof.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

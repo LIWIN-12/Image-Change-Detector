@@ -1,25 +1,25 @@
-# 🔎 Image Forensics
+# Image Forensics
 
-A small Streamlit app for three questions:
+A plain HTML/CSS/JS workspace for three checks:
 
-1. **What changed between two images?** — align, diff, and list changed regions.
-2. **Does one image look edited?** — compression, noise, and duplicated-patch clues.
-3. **Does one image look AI-generated?** — file tags, a classifier, and weak visual clues.
+1. **Compare** — align a before/after pair, show changed regions and a mask.
+2. **Tamper check** — compression, noise and duplicated-patch clues in one image.
+3. **AI origin** — file tags, a local ONNX detector and visual clues, combined into a confidence band.
 
 ## Honest limits
 
-- **AI detection is evidence, not proof.** Detectors miss new generators and fail on compressed or resized images. The app reports `Strong / Moderate / Weak / No evidence`, never a bare verdict.
-- **Single-image edit checks are clues.** Re-saving an image can look like tampering. ELA is only meaningful for JPEG uploads, and pasted areas can be darker *or* brighter than their surroundings.
-- **Metadata helps only when present.** No tag means "unknown", not "human-made".
+- **AI detection is evidence, not proof.** Detectors miss new generators and fail on compressed images. The app reports `Strong / Moderate / Weak / No evidence`, never a bare verdict.
+- **Single-image edit checks are clues.** Re-saving an image can look like tampering. ELA is most meaningful for JPEG uploads.
+- **No metadata tag means unknown**, not human-made.
 
-## Quick start
+## Run locally
 
 ```bash
 pip install -r requirements.txt
-streamlit run app_streamlit.py
+uvicorn server:app --reload --port 7860
 ```
 
-Python 3.11 or newer is recommended. The first AI-origin check downloads a 93 MB quantized model and takes ~10–20 s on CPU; later checks in the same session are instant. No PyTorch or CUDA install is needed.
+Open `http://localhost:7860`. Python 3.11+ is recommended. The first AI-origin check downloads a 93 MB quantized model (~10–20 s on CPU); no PyTorch or CUDA is needed.
 
 ## Checks
 
@@ -31,28 +31,30 @@ Ten assertions on synthetic images. No test framework required.
 
 ## How it works
 
-| Tab | Method |
+| Page | Method |
 |---|---|
-| Compare two images | `findTransformECC` alignment → Gaussian blur → absolute difference → threshold → morphological open → contours above an area limit |
-| Check one image | Error Level Analysis (JPEG Q90 re-save), ORB copy-move matching, 16×16 block noise inconsistency |
+| Compare | `findTransformECC` alignment → Gaussian blur → absolute difference → threshold → morphological open → contours above an area limit |
+| Tamper check | Error Level Analysis (JPEG Q90 re-save), ORB copy-move matching, 16×16 block noise inconsistency |
 | AI origin | PNG `parameters`/`workflow` chunks, EXIF Software, XMP/C2PA markers → ONNX Swin detector (`onnxruntime`, int8) → Laplacian smoothness and saturation clipping |
 
-All uploaded images are downscaled to a 1600 px longest edge before processing.
+Uploaded images are downscaled to a 1600 px longest edge before processing.
 
 ## Deployment (Hugging Face Spaces)
 
-- SDK: Streamlit
-- App file: `app_streamlit.py`
-- Python: set to 3.11+ in Space settings (do not add `runtime.txt`)
-- Free CPU tier works; expect a cold start on first AI-origin check
+- SDK: Docker
+- Port: 7860 (the Dockerfile respects the `PORT` environment variable)
+- Free CPU tier works; expect a cold start on the first AI-origin check
 
 ## Files
 
 ```
-app_streamlit.py   Streamlit UI, three tabs
-core.py            pure image-processing functions
-test_core.py       synthetic-image checks
-requirements.txt   dependencies
+server.py            FastAPI endpoints and static file serving
+static/index.html    page structure
+static/style.css     layout and styling
+static/app.js        uploads, previews, API calls and result rendering
+core.py              pure image-processing functions
+test_core.py         synthetic-image checks
+Dockerfile           container for HF Spaces
 ```
 
 ## License

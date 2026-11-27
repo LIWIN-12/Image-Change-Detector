@@ -23,10 +23,88 @@ function bindPreview(inputId, imgId) {
   });
 }
 
-["before-input:before-preview", "after-input:after-preview",
- "tamper-input:tamper-preview", "ai-input:ai-preview"].forEach((pair) => {
+["tamper-input:tamper-preview", "ai-input:ai-preview"].forEach((pair) => {
   const [input, img] = pair.split(":");
   bindPreview(input, img);
+});
+
+function slotParts(slot) {
+  return {
+    input: $(slot + "-input"),
+    image: $(slot + "-preview"),
+    zone: document.querySelector('.dropzone[data-slot="' + slot + '"]'),
+    prompt: document.querySelector('.dropzone[data-slot="' + slot + '"] .drop-prompt'),
+    meta: $(slot + "-meta"),
+    clear: $(slot + "-clear"),
+  };
+}
+
+function resetSlot(slot) {
+  const part = slotParts(slot);
+  if (part.image.dataset.url) URL.revokeObjectURL(part.image.dataset.url);
+  delete part.image.dataset.url;
+  part.image.onload = null;
+  part.image.onerror = null;
+  part.input.value = "";
+  part.image.hidden = true;
+  part.image.removeAttribute("src");
+  part.prompt.hidden = false;
+  part.meta.textContent = "EMPTY SLOT :";
+  part.clear.hidden = true;
+  part.zone.classList.remove("dragging");
+}
+
+function loadSlot(slot, file) {
+  if (!file || !file.type.startsWith("image/")) return resetSlot(slot);
+  const part = slotParts(slot);
+  if (part.image.dataset.url) URL.revokeObjectURL(part.image.dataset.url);
+  part.image.onload = null;
+  part.image.onerror = null;
+  part.image.hidden = true;
+  part.prompt.hidden = false;
+  part.clear.hidden = true;
+  part.meta.textContent = file.name.toUpperCase() + " / READING…";
+
+  const url = URL.createObjectURL(file);
+  part.image.dataset.url = url;
+  part.image.onload = () => {
+    part.meta.textContent = file.name.toUpperCase() + " / " +
+      part.image.naturalWidth + "×" + part.image.naturalHeight;
+    part.image.hidden = false;
+    part.prompt.hidden = true;
+    part.clear.hidden = false;
+  };
+  part.image.onerror = () => { resetSlot(slot); };
+  part.image.src = url;
+}
+
+["before", "after"].forEach((slot) => {
+  const part = slotParts(slot);
+  part.input.addEventListener("change", () => loadSlot(slot, part.input.files[0]));
+
+  part.zone.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    part.zone.classList.add("dragging");
+  });
+  part.zone.addEventListener("dragleave", () => {
+    part.zone.classList.remove("dragging");
+  });
+  part.zone.addEventListener("drop", (event) => {
+    event.preventDefault();
+    part.zone.classList.remove("dragging");
+    const file = event.dataTransfer.files[0];
+    if (!file) return;
+    const transfer = new DataTransfer();
+    transfer.items.add(file);
+    part.input.files = transfer.files;
+    part.input.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+
+  part.clear.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    resetSlot(slot);
+  });
 });
 
 document.querySelectorAll(".nav-item").forEach((button) => {

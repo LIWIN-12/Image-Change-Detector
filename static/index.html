@@ -72,14 +72,28 @@
 
           <div class="grid two">
             <div class="card upload-card">
-              <label for="before-input">BEFORE IMAGE <span>:</span></label>
-              <input id="before-input" type="file" accept="image/png,image/jpeg">
-              <div class="drop"><img id="before-preview" alt="Before preview"></div>
+              <div class="upload-head">
+                <label for="before-input">BEFORE IMAGE <span>:</span></label>
+                <span class="file-meta" id="before-meta">EMPTY SLOT :</span>
+                <button type="button" class="clear-slot" id="before-clear" hidden>[ × CLEAR ]</button>
+              </div>
+              <input id="before-input" class="native-file" type="file" accept="image/png,image/jpeg">
+              <label class="dropzone" for="before-input" data-slot="before">
+                <span class="drop-prompt">[ + DROP IMAGE OR CLICK TO BROWSE ]</span>
+                <img id="before-preview" alt="Before preview" hidden>
+              </label>
             </div>
             <div class="card upload-card">
-              <label for="after-input">AFTER IMAGE <span>:</span></label>
-              <input id="after-input" type="file" accept="image/png,image/jpeg">
-              <div class="drop"><img id="after-preview" alt="After preview"></div>
+              <div class="upload-head">
+                <label for="after-input">AFTER IMAGE <span>:</span></label>
+                <span class="file-meta" id="after-meta">EMPTY SLOT :</span>
+                <button type="button" class="clear-slot" id="after-clear" hidden>[ × CLEAR ]</button>
+              </div>
+              <input id="after-input" class="native-file" type="file" accept="image/png,image/jpeg">
+              <label class="dropzone" for="after-input" data-slot="after">
+                <span class="drop-prompt">[ + DROP IMAGE OR CLICK TO BROWSE ]</span>
+                <img id="after-preview" alt="After preview" hidden>
+              </label>
             </div>
           </div>
 

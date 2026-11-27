@@ -28,58 +28,76 @@ CAVEAT = ("Detectors miss new AI generators and fail on compressed images. "
 
 CSS = """
 <style>
-.stApp { background: linear-gradient(180deg, #f7f9fc 0%, #edf2f8 100%); }
-.block-container { padding-top: 1.5rem; max-width: 1500px; }
-.hero {
-  background: linear-gradient(135deg, #0f172a, #1e293b 55%, #312e81);
-  color: white; padding: 26px 30px; border-radius: 20px;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, .18); margin-bottom: 18px;
+:root {
+  --paper: #f7f6f2;
+  --ink: #17191c;
+  --muted: #6d7278;
+  --line: #d9d7d0;
+  --line-strong: #b9b6ad;
+  --accent: #185a48;
 }
-.hero h1 { margin: 0; font-size: 2.1rem; letter-spacing: -.02em; }
-.hero p { margin: 8px 0 14px; color: #cbd5e1; font-size: .98rem; }
-.pill-row { display: flex; gap: 8px; flex-wrap: wrap; }
-.hero-pill {
-  background: rgba(255, 255, 255, .12); border: 1px solid rgba(255, 255, 255, .22);
-  padding: 5px 12px; border-radius: 999px; font-size: .82rem;
+.stApp { background: var(--paper); }
+.block-container { max-width: 1320px; padding-top: 1.25rem; }
+.masthead { border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 16px; }
+.overline {
+  font: 600 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
 }
-.section-label { font-weight: 700; color: #334155; font-size: 1.02rem; margin: 12px 0 8px; }
-.tile {
-  background: white; border: 1px solid #e2e8f0; border-radius: 14px;
-  padding: 14px 16px; box-shadow: 0 2px 8px rgba(15, 23, 42, .05); height: 100%;
+.masthead h1 { font-size: 2rem; font-weight: 650; margin: 6px 0 4px; }
+.masthead p { margin: 0; color: var(--muted); font-size: .92rem; }
+.sec {
+  display: flex; align-items: baseline; gap: 10px; font-weight: 600;
+  border-top: 1px solid var(--line); padding-top: 10px; margin: 18px 0 10px;
 }
-.tile-label { color: #64748b; font-size: .76rem; text-transform: uppercase; letter-spacing: .06em; }
-.tile-value { font-size: 1.55rem; font-weight: 700; color: #0f172a; margin-top: 4px; }
-.tile-note { color: #64748b; font-size: .8rem; margin-top: 4px; }
-.band { border-radius: 16px; padding: 20px; color: white; box-shadow: 0 6px 18px rgba(15, 23, 42, .12); }
-.band-label { font-size: .78rem; text-transform: uppercase; letter-spacing: .12em; opacity: .85; }
-.band-value { font-size: 2rem; font-weight: 800; margin: 4px 0; }
-.band-strong { background: linear-gradient(135deg, #b91c1c, #dc2626); }
-.band-moderate { background: linear-gradient(135deg, #b45309, #f59e0b); }
-.band-weak { background: linear-gradient(135deg, #0369a1, #0ea5e9); }
-.band-none { background: linear-gradient(135deg, #047857, #10b981); }
-.band-unknown { background: linear-gradient(135deg, #475569, #64748b); }
-.chip {
-  display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: .8rem;
-  margin: 2px 4px 2px 0; background: #eef2ff; color: #3730a3; border: 1px solid #c7d2fe;
+.sec .num {
+  font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--accent);
 }
-.chip-good { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
-.chip-warn { background: #fffbeb; color: #92400e; border-color: #fde68a; }
-.note {
-  background: white; border-left: 4px solid #4f46e5; border-radius: 10px;
-  padding: 12px 16px; color: #475569; font-size: .89rem;
+.metric { background: white; border: 1px solid var(--line); padding: 12px 14px; }
+.metric-label {
+  font: 600 10px ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
 }
-.guide { font-size: .87rem; color: #475569; line-height: 1.55; }
-[data-testid="stTabs"] button { font-size: 1rem; font-weight: 600; }
+.metric-value {
+  font: 600 1.45rem ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums; margin-top: 6px;
+}
+.metric-note { font-size: .78rem; color: var(--muted); margin-top: 4px; }
+.tag {
+  display: inline-block; font: 500 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+  border: 1px solid var(--line-strong); padding: 3px 7px; margin: 2px 4px 2px 0;
+  color: var(--ink);
+}
+.tag-ok { border-color: #9bbcaf; color: var(--accent); }
+.tag-warn { border-color: #d6ad9c; color: #a4472b; }
+.note { border-left: 3px solid var(--accent); padding: 8px 12px; color: var(--muted); font-size: .86rem; }
+.verdict { background: white; border: 1px solid var(--line); border-left: 5px solid var(--accent); padding: 16px; }
+.verdict-label {
+  font: 600 10px ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+}
+.verdict-value { font-size: 1.7rem; font-weight: 650; margin: 4px 0; }
+.verdict-strong { border-left-color: #a4472b; }
+.verdict-moderate { border-left-color: #b07b2a; }
+.verdict-weak { border-left-color: #2b6a8f; }
+.verdict-none { border-left-color: var(--accent); }
+.verdict-unknown { border-left-color: var(--muted); }
+.guide { font-size: .86rem; color: #454a50; line-height: 1.6; }
+.guide b {
+  font: 600 .78rem ui-monospace, SFMono-Regular, Menlo, monospace;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+[data-testid="stTabs"] button { font-size: .92rem; font-weight: 600; }
+div[data-testid="stVerticalBlockBorderWrapper"] > div {
+  border-radius: 2px !important; border-color: var(--line) !important; box-shadow: none !important;
+}
 </style>
 """
 
 st.markdown(CSS, unsafe_allow_html=True)
 st.markdown(
-    '<div class="hero"><h1>🔎 Image Forensics</h1>'
-    '<p>Compare edits, inspect tampering clues, and assess AI origin — in one place.</p>'
-    '<div class="pill-row"><span class="hero-pill">📁 local files only</span>'
-    '<span class="hero-pill">⚡ processed in your session</span>'
-    '<span class="hero-pill">🧠 ONNX detector</span></div></div>',
+    '<div class="masthead"><div class="overline">Local image forensics</div>'
+    '<h1>Image Forensics</h1>'
+    '<p>Compare edits, inspect tampering clues, and assess AI origin.</p></div>',
     unsafe_allow_html=True,
 )
 
@@ -87,12 +105,12 @@ with st.sidebar:
     st.markdown("### Quick guide")
     st.markdown(
         '<div class="guide">'
-        '<b>Compare</b> — add a before/after pair. Images are aligned first, then '
-        'differences become boxes and a mask.<br><br>'
-        '<b>Check one image</b> — look for compression, noise and duplicated-patch '
-        'clues.<br><br>'
-        '<b>AI origin</b> — combine file tags, a detector score and visual clues '
-        'into a confidence band.'
+        '<b>Compare</b> — add a before/after pair. Images are aligned first, '
+        'then differences become boxes and a mask.<br><br>'
+        '<b>Check one image</b> — look for compression, noise and '
+        'duplicated-patch clues.<br><br>'
+        '<b>AI origin</b> — combine file tags, a detector score and visual '
+        'clues into a confidence band.'
         '</div>',
         unsafe_allow_html=True,
     )
@@ -103,22 +121,24 @@ with st.sidebar:
 
 
 def tile(label, value, note=None):
-    body = (f'<div class="tile"><div class="tile-label">{html.escape(str(label))}</div>'
-            f'<div class="tile-value">{html.escape(str(value))}</div>')
+    body = (f'<div class="metric"><div class="metric-label">{html.escape(str(label))}</div>'
+            f'<div class="metric-value">{html.escape(str(value))}</div>')
     if note:
-        body += f'<div class="tile-note">{html.escape(str(note))}</div>'
+        body += f'<div class="metric-note">{html.escape(str(note))}</div>'
     st.markdown(body + "</div>", unsafe_allow_html=True)
 
 
 def chip(text, tone=""):
-    css_class = f"chip {tone}".strip()
+    css_class = f"tag {tone}".strip()
     st.markdown(f'<span class="{css_class}">{html.escape(str(text))}</span>',
                 unsafe_allow_html=True)
 
 
-def section(text):
-    st.markdown(f'<div class="section-label">{html.escape(text)}</div>',
-                unsafe_allow_html=True)
+def section(number, text):
+    st.markdown(
+        f'<div class="sec"><span class="num">{number}</span>{html.escape(text)}</div>',
+        unsafe_allow_html=True,
+    )
 
 
 @st.cache_data(show_spinner=False)
@@ -138,12 +158,10 @@ def load_detector():
     return ort.InferenceSession(str(target), providers=["CPUExecutionProvider"])
 
 
-compare_tab, tamper_tab, ai_tab = st.tabs([
-    "🔁  Compare two images", "🔍  Check one image", "🤖  AI origin"
-])
+compare_tab, tamper_tab, ai_tab = st.tabs(["Compare", "Tamper check", "AI origin"])
 
 with compare_tab:
-    section("1 · Upload the pair")
+    section("01", "Upload the pair")
     left, right = st.columns(2)
     with left:
         with st.container(border=True):
@@ -161,7 +179,7 @@ with compare_tab:
                 st.image(after_file, width="stretch")
 
     if before_file and after_file:
-        section("2 · Tune detection")
+        section("02", "Tune detection")
         with st.container(border=True):
             controls = st.columns(3)
             threshold = controls[0].slider("Difference threshold", 1, 100, 30)
@@ -171,11 +189,11 @@ with compare_tab:
         result = cached_diff(before_file.getvalue(), after_file.getvalue(),
                              threshold, min_area, align)
         if align and result.aligned:
-            chip("✓ Images aligned automatically", "chip-good")
+            chip("Aligned automatically", "tag-ok")
         elif align:
-            chip("! Alignment failed — compared as uploaded", "chip-warn")
+            chip("Alignment failed — compared as uploaded", "tag-warn")
 
-        section("3 · Results")
+        section("03", "Results")
         metrics = st.columns(4)
         with metrics[0]:
             tile("Changed regions", len(result.regions))
@@ -213,7 +231,7 @@ with compare_tab:
             _, encoded = cv2.imencode(
                 ".png", cv2.cvtColor(result.marked, cv2.COLOR_RGB2BGR)
             )
-            st.download_button("⬇ Save marked image", encoded.tobytes(),
+            st.download_button("Save marked image", encoded.tobytes(),
                                file_name="marked.png", mime="image/png")
         with st.expander("Show raw difference"):
             st.image(result.diff, width="stretch")
@@ -221,7 +239,7 @@ with compare_tab:
 with tamper_tab:
     st.markdown('<div class="note">Clues only — a clean image can look '
                 'suspicious after re-saving.</div>', unsafe_allow_html=True)
-    section("Upload one image")
+    section("01", "Upload one image")
     with st.container(border=True):
         upload = st.file_uploader("Image to inspect", type=["jpg", "png", "jpeg"],
                                   key="tamper")
@@ -233,7 +251,7 @@ with tamper_tab:
             noise, ratio = noise_map(image)
 
         if upload.type != "image/jpeg":
-            chip("ELA is most meaningful for JPEG uploads", "chip-warn")
+            chip("ELA is most meaningful for JPEG uploads", "tag-warn")
 
         preview, scores = st.columns([1, 2])
         with preview:
@@ -249,7 +267,7 @@ with tamper_tab:
             with score_cols[2]:
                 tile("Noise ratio", f"{ratio:.1f}", "max ÷ median block")
 
-        section("Visual checks")
+        section("02", "Visual checks")
         h1, h2, h3 = st.columns(3)
         with h1:
             with st.container(border=True):
@@ -274,7 +292,7 @@ with ai_tab:
     st.markdown('<div class="note">Three independent signals, combined into '
                 'a confidence band — never a bare verdict.</div>',
                 unsafe_allow_html=True)
-    section("Upload one image")
+    section("01", "Upload one image")
     with st.container(border=True):
         ai_upload = st.file_uploader("Image to assess", type=["jpg", "png", "jpeg"],
                                      key="ai")
@@ -303,22 +321,23 @@ with ai_tab:
                 "No evidence": "none", "Unknown": "unknown",
             }[band]
             st.markdown(
-                f'<div class="band band-{tone}"><div class="band-label">'
-                f'Assessment</div><div class="band-value">{html.escape(band)}</div>'
+                f'<div class="verdict verdict-{tone}">'
+                f'<div class="verdict-label">Assessment</div>'
+                f'<div class="verdict-value">{html.escape(band)}</div>'
                 f'<div>{html.escape(reason)}</div></div>',
                 unsafe_allow_html=True,
             )
 
-        section("Signals")
+        section("02", "Signals")
         signal_cols = st.columns(3)
         with signal_cols[0]:
             with st.container(border=True):
                 st.markdown("**File tags**")
                 if provenance.hits:
                     for hit in provenance.hits:
-                        chip(hit, "chip-warn")
+                        chip(hit, "tag-warn")
                 else:
-                    chip("None found", "chip-good")
+                    chip("None found", "tag-ok")
         with signal_cols[1]:
             with st.container(border=True):
                 st.markdown("**AI detector**")
@@ -332,9 +351,9 @@ with ai_tab:
                 st.markdown("**Visual clues**")
                 if flags:
                     for flag in flags:
-                        chip(flag, "chip-warn")
+                        chip(flag, "tag-warn")
                 else:
-                    chip("None found", "chip-good")
+                    chip("None found", "tag-ok")
 
         with st.expander("Raw numbers"):
             st.write(f"Texture smoothness (Laplacian variance): {smoothness:.1f}")

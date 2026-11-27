@@ -41,6 +41,7 @@ def prepare(image, max_edge: int = MAX_EDGE) -> np.ndarray:
 
 @dataclass
 class DiffResult:
+    after: np.ndarray
     marked: np.ndarray
     mask: np.ndarray
     diff: np.ndarray
@@ -103,7 +104,7 @@ def detect_changes(before_img, after_img, threshold: int = 30,
             "mean_diff": round(float(diff[y:y + h, x:x + w].mean()), 1),
         })
     regions.sort(key=lambda r: r["area"], reverse=True)
-    return DiffResult(marked, mask, diff, regions, aligned)
+    return DiffResult(after, marked, mask, diff, regions, aligned)
 
 
 def error_level_analysis(image) -> tuple[np.ndarray, float]:

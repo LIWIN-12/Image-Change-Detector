@@ -1,120 +1,62 @@
-# 🖼️ Image Change Detector
+# 🔎 Image Forensics
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-hf-space-link.hf.space)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+A small Streamlit app for three questions:
 
-An advanced image comparison tool that detects and highlights differences between two images using computer vision techniques, including SSIM (Structural Similarity Index) and contour detection.
+1. **What changed between two images?** — align, diff, and list changed regions.
+2. **Does one image look edited?** — compression, noise, and duplicated-patch clues.
+3. **Does one image look AI-generated?** — file tags, a classifier, and weak visual clues.
 
-## ✨ Features
+## Honest limits
 
-- **Dual Image Comparison**: Compare before/after images side by side
-- **Smart Change Detection**: Uses SSIM for accurate difference detection
-- **Visual Annotations**: Highlights changes with clear visual markers
-- **Interactive UI**: User-friendly interface with real-time feedback
-- **Responsive Design**: Works on both desktop and mobile devices
+- **AI detection is evidence, not proof.** Detectors miss new generators and fail on compressed or resized images. The app reports `Strong / Moderate / Weak / No evidence`, never a bare verdict.
+- **Single-image edit checks are clues.** Re-saving an image can look like tampering. ELA is only meaningful for JPEG uploads, and pasted areas can be darker *or* brighter than their surroundings.
+- **Metadata helps only when present.** No tag means "unknown", not "human-made".
 
-## 🚀 Quick Start
+## Quick start
 
-### Prerequisites
-- Python 3.9+
-- pip (Python package manager)
-
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/LIWIN-12/image-change-detector.git
-   cd image-change-detector
-   ```
-
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Run the application:
-   ```bash
-   streamlit run app_streamlit.py
-   ```
-
-## 🖥️ Usage
-
-1. Click "Browse files" to upload your "Before" and "After" images
-2. Adjust the sensitivity slider if needed
-3. Click "Detect Changes" to analyze the images
-4. View the results:
-   - **Left Panel**: Original image with marked changes (red rectangles)
-   - **Right Panel**: Visual difference map
-
-## 🛠️ Technical Details
-
-### Core Technologies
-- **Streamlit** - Web application framework
-- **OpenCV** - Image processing and computer vision
-- **NumPy** - Numerical computations
-- **Pillow** - Image handling
-- **scikit-image** - SSIM calculation
-
-### How It Works
-1. Images are converted to grayscale and resized to matching dimensions
-2. SSIM (Structural Similarity Index) identifies structural differences
-3. Contour detection outlines changed regions
-4. Results are displayed with visual annotations
-
-## 🌐 Deployment
-
-### Hugging Face Spaces
-[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces)
-
-1. Create a new Space on Hugging Face
-2. Upload these files:
-   - `app_streamlit.py`
-   - `requirements.txt`
-   - `runtime.txt`
-   - `README.md`
-3. Configure with Streamlit SDK
-
-### Local Deployment
 ```bash
-docker build -t image-change-detector .
-docker run -p 8501:8501 image-change-detector
+pip install -r requirements.txt
+streamlit run app_streamlit.py
 ```
 
-## 📂 Project Structure
+Python 3.11 or newer is recommended. The first AI-origin check downloads a 93 MB quantized model and takes ~10–20 s on CPU; later checks in the same session are instant. No PyTorch or CUDA install is needed.
 
-```
-image-change-detector/
-├── app_streamlit.py     # Main Streamlit application
-├── requirements.txt     # Python dependencies
-├── runtime.txt          # Python version specification
-├── README.md            # Project documentation
-└── tests/               # Test files
-    ├── test_app.py
-    └── test_core.py
+## Checks
+
+```bash
+python test_core.py
 ```
 
-## 🤝 Contributing
+Ten assertions on synthetic images. No test framework required.
 
-Contributions are welcome! Please follow these steps:
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+## How it works
 
-## 📄 License
+| Tab | Method |
+|---|---|
+| Compare two images | `findTransformECC` alignment → Gaussian blur → absolute difference → threshold → morphological open → contours above an area limit |
+| Check one image | Error Level Analysis (JPEG Q90 re-save), ORB copy-move matching, 16×16 block noise inconsistency |
+| AI origin | PNG `parameters`/`workflow` chunks, EXIF Software, XMP/C2PA markers → ONNX Swin detector (`onnxruntime`, int8) → Laplacian smoothness and saturation clipping |
 
-Distributed under the MIT License. See `LICENSE` for more information.
+All uploaded images are downscaled to a 1600 px longest edge before processing.
 
-## 📧 Contact
+## Deployment (Hugging Face Spaces)
 
-Your Name - jkliwinjose@gmail.com
+- SDK: Streamlit
+- App file: `app_streamlit.py`
+- Python: set to 3.11+ in Space settings (do not add `runtime.txt`)
+- Free CPU tier works; expect a cold start on first AI-origin check
 
-Project Link: (https://huggingface.co/spaces/LIWIN-12/image-change-detector)
+## Files
 
-## 🙏 Acknowledgments
+```
+app_streamlit.py   Streamlit UI, three tabs
+core.py            pure image-processing functions
+test_core.py       synthetic-image checks
+requirements.txt   dependencies
+```
 
-- [OpenCV](https://opencv.org/) for powerful computer vision tools
-- [Streamlit](https://streamlit.io/) for the amazing web framework
-- [scikit-image](https://scikit-image.org/) for SSIM implementation
+## License
+
+App code: MIT.
+
+The AI detector, [`SMOGY-Ai-images-detector-ONNX`](https://huggingface.co/onnx-community/SMOGY-Ai-images-detector-ONNX), is licensed **CC-BY-NC-4.0** (non-commercial). It is downloaded at runtime and is not covered by this repository's MIT license. Check that license before commercial use.
